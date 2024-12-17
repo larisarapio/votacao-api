@@ -5,14 +5,16 @@ import com.sarapio.votacao_api.dtos.TopicDTO;
 import com.sarapio.votacao_api.repositories.TopicRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class TopicServiceTest {
 
     @Mock
@@ -23,7 +25,7 @@ class TopicServiceTest {
 
     @Test
     @DisplayName("Create topic with success")
-    void createTopicCase1() {
+    void shouldCreateTopicWhenDataIsValid() {
         TopicDTO topicDTO = new TopicDTO("Valid Title", "Valid Description");
 
         Topic topic = new Topic(topicDTO);
@@ -38,7 +40,7 @@ class TopicServiceTest {
 
     @Test
     @DisplayName("Cannot create duplicate topics")
-    void createTopicCase2() {
+    void shouldThrowExceptionWhenTopicTitleIsDuplicate() {
         TopicDTO topicDTO = new TopicDTO("Duplicate Title", "Description");
 
         when(topicRepository.existsByTitle(topicDTO.title())).thenReturn(true);
@@ -52,7 +54,7 @@ class TopicServiceTest {
 
     @Test
     @DisplayName("Title or description are null")
-    void createTopicCase3() {
+    void shouldThrowExceptionWhenTitleOrDescriptionIsEmpty() {
         TopicDTO topicDTO = new TopicDTO("", "Valid Description");
 
         try {
