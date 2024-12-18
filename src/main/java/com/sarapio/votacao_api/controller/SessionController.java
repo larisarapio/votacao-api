@@ -45,12 +45,16 @@ public class SessionController {
 
     private ResponseEntity<Session> handleSessionCreation(Long topicId) {
         try {
+            System.out.println("Creating session for topicId: " + topicId);
             Session session = sessionService.createSession(topicId);
             return ResponseEntity.status(HttpStatus.CREATED).body(session);
         } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    
 }
