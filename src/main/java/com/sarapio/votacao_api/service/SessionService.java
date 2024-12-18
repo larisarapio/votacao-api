@@ -25,6 +25,8 @@ public class SessionService {
     public Session createSession(Long topicId) {
         Topic topic = findTopicById(topicId);
 
+        ensureTopicNotAlreadyUsed(topicId);
+
         Date dateEnd = calculateEndDate();
 
         Session session = new Session(System.currentTimeMillis(), dateEnd.getTime(), 0, topic);
@@ -44,6 +46,13 @@ public class SessionService {
         return topicRepository.findById(topicId)
                 .orElseThrow(() -> new IllegalArgumentException("Topic not found with id: " + topicId));
     }
+
+    private void ensureTopicNotAlreadyUsed(Long topicId) {
+        if (sessionRepository.existsByTopicId(topicId)) {
+            throw new IllegalArgumentException("The topic has already been used to create a session!");
+        }
+    }
+
 
     public void saveSession(Session session) {
         sessionRepository.save(session);
