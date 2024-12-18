@@ -1,6 +1,6 @@
 package com.sarapio.votacao_api.controller;
 
-import com.sarapio.votacao_api.domain.session.Session;
+import com.sarapio.votacao_api.domain.Session;
 import com.sarapio.votacao_api.domain.vote.VoteRequestDTO;
 import com.sarapio.votacao_api.service.VoteService;
 import org.springframework.http.MediaType;
@@ -20,12 +20,14 @@ public class VoteController {
         this.voteService = voteService;
     }
 
+    /*
     @PostMapping(value = "/create/{associateId}/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createVote(@PathVariable UUID associateId, @PathVariable UUID sessionId, @RequestBody VoteRequestDTO data) {
         String result = voteService.createVote(associateId, sessionId, data);
         return ResponseEntity.ok(result);
     }
 
+*/
     @GetMapping("/result")
     public ResponseEntity<List<Session>> results() {
         List<Session> result = voteService.results();

@@ -2,7 +2,7 @@ package com.sarapio.votacao_api.service;
 
 import com.github.javafaker.Faker;
 import com.sarapio.votacao_api.domain.associate.Associate;
-import com.sarapio.votacao_api.domain.session.Session;
+import com.sarapio.votacao_api.domain.Session;
 import com.sarapio.votacao_api.domain.vote.Vote;
 import com.sarapio.votacao_api.domain.vote.VoteRequestDTO;
 import com.sarapio.votacao_api.repositories.AssociateRepository;
@@ -25,6 +25,7 @@ public class VoteService {
         this.sessionRepository = sessionRepository;
     }
 
+    /*
     public String createVote(UUID associateId, UUID sessionId, VoteRequestDTO data) {
         Associate associate = associateRepository.findById(associateId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Session session = sessionRepository.findById(sessionId).orElseThrow(() -> new IllegalArgumentException("Session not found"));
@@ -45,6 +46,8 @@ public class VoteService {
 
         return "Voto registrado com sucesso!";
     }
+
+    */
 
     public List<Session> results() {
         return sessionRepository.findAll();

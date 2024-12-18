@@ -1,17 +1,16 @@
 package com.sarapio.votacao_api.controller;
 
-import com.sarapio.votacao_api.domain.session.Session;
-import com.sarapio.votacao_api.domain.session.SessionRequestDTO;
+import com.sarapio.votacao_api.domain.Session;
 import com.sarapio.votacao_api.service.SessionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/session")
+@RequestMapping("/sessions")
 public class SessionController {
 
     private final SessionService sessionService;
@@ -20,16 +19,21 @@ public class SessionController {
         this.sessionService = sessionService;
     }
 
-    /*
-    @PostMapping(value = "/createSession/{topicId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Session> createSession(@PathVariable UUID topicId, @RequestBody SessionRequestDTO data) {
-        Session sessions = sessionService.createSession(topicId, data);
-        return ResponseEntity.ok(sessions);
-    } */
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Session> listSessions() {
-        return sessionService.listSession();
+    @PostMapping(value = "/{topicId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Session> createSession(@PathVariable Long topicId) {
+        try {
+            Session session = sessionService.createSession(topicId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(session);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Session>> listSessions() {
+        List<Session> sessions = sessionService.listSession();
+        return ResponseEntity.ok(sessions);
+    }
 }

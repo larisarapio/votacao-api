@@ -3,7 +3,7 @@ package com.sarapio.votacao_api.domain.vote;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sarapio.votacao_api.domain.associate.Associate;
-import com.sarapio.votacao_api.domain.session.Session;
+import com.sarapio.votacao_api.domain.Session;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

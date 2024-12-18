@@ -1,7 +1,6 @@
 package com.sarapio.votacao_api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sarapio.votacao_api.dtos.TopicDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,22 +14,24 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
     @Column(nullable = false)
+    @JsonProperty("title")
     private String title;
 
     @Column(nullable = false)
+    @JsonProperty("description")
     private String description;
 
     public Topic(TopicDTO data) {
         this.title = data.title();
         this.description = data.description();
     }
-
+    
 }
