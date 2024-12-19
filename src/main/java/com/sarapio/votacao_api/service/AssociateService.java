@@ -15,13 +15,13 @@ public class AssociateService {
         this.associateRepository = associateRepository;
     }
 
-    public Associate createAssociate(AssociateDTO associateData) {
-        validateAssociateData(associateData);
+    public Associate createAssociate(AssociateDTO associateDTO) {
+        validateAssociateData(associateDTO);
         
-        String cpf = associateData.cpf();
+        String cpf = associateDTO.cpf();
         checkIfAssociateExists(cpf);
 
-        return saveNewAssociate(cpf, associateData.name());
+        return saveNewAssociate(cpf, associateDTO.name());
     }
 
     private void validateAssociateData(AssociateDTO associateData) {

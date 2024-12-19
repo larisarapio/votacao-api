@@ -25,9 +25,9 @@ public class AssociateController {
     }
 
     @PostMapping(produces = APPLICATION_JSON, consumes = APPLICATION_JSON)
-    public ResponseEntity<Associate> createAssociate(@RequestBody AssociateDTO associateData) {
+    public ResponseEntity<Associate> createAssociate(@RequestBody AssociateDTO data) {
         try {
-            Associate associate = associateService.createAssociate(associateData);
+            Associate associate = associateService.createAssociate(data);
             return ResponseEntity.ok(associate);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);  

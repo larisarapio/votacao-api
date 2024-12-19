@@ -20,17 +20,20 @@ public class SessionController {
         this.sessionService = sessionService;
     }
 
-    @PostMapping(value = "/{topicId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Session> createSession(
-            @PathVariable Long topicId,
-            @RequestBody SessionDTO sessionDTO) {
-
-        if (!isTopicIdValid(topicId, sessionDTO)) {
+    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createSession(@RequestBody SessionDTO data) {
+        if (data.topicId() == null || data.topicId() <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(null); 
+                    .body("Topic ID is required and must be valid");
         }
 
-        return handleSessionCreation(topicId);
+        try {
+            Session session = sessionService.createSession(data);
+            return ResponseEntity.status(HttpStatus.CREATED).body(session);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid topic: " + e.getMessage());
+        }
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,22 +42,5 @@ public class SessionController {
         return ResponseEntity.ok(sessions);
     }
 
-    private boolean isTopicIdValid(Long topicId, SessionDTO sessionDTO) {
-        return topicId.equals(sessionDTO.topicId());
-    }
 
-    private ResponseEntity<Session> handleSessionCreation(Long topicId) {
-        try {
-            System.out.println("Creating session for topicId: " + topicId);
-            Session session = sessionService.createSession(topicId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(session);
-        } catch (IllegalArgumentException e) {
-            System.out.println("IllegalArgumentException: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-    
 }

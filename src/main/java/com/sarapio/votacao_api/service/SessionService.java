@@ -2,6 +2,7 @@ package com.sarapio.votacao_api.service;
 
 import com.sarapio.votacao_api.domain.Session;
 import com.sarapio.votacao_api.domain.Topic;
+import com.sarapio.votacao_api.dtos.SessionDTO;
 import com.sarapio.votacao_api.repositories.SessionRepository;
 import com.sarapio.votacao_api.repositories.TopicRepository;
 import org.springframework.stereotype.Service;
@@ -22,18 +23,21 @@ public class SessionService {
         this.topicRepository = topicRepository;
     }
 
-    public Session createSession(Long topicId) {
-        Topic topic = findTopicById(topicId);
+    public Session createSession(SessionDTO data) {
 
+        Long topicId = data.topicId();
+        Topic topic = findTopicById(topicId);
         ensureTopicNotAlreadyUsed(topicId);
+
+        if (data.topicId() == null || data.topicId() <= 0) {
+            throw new IllegalArgumentException("Invalid topic ID");
+        }
 
         Date dateEnd = calculateEndDate();
 
         Session session = new Session(System.currentTimeMillis(), dateEnd.getTime(), 0, topic);
 
-        saveSession(session);
-
-        return session;
+        return sessionRepository.save(session);
     }
 
     private Date calculateEndDate() {
@@ -52,12 +56,7 @@ public class SessionService {
             throw new IllegalArgumentException("The topic has already been used to create a session!");
         }
     }
-
-
-    public void saveSession(Session session) {
-        sessionRepository.save(session);
-    }
-
+    
     public List<Session> listSession() {
         return sessionRepository.findAll();
     }

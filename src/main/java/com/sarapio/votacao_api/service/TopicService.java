@@ -16,20 +16,19 @@ public class TopicService {
         this.topicRepository = topicRepository;
     }
 
-    public Topic createTopic(TopicDTO data) {
-        validateTopicData(data);
-        validateTitleDoesNotExist(data.title());
+    public Topic createTopic(TopicDTO topicDTO) {
+        validateTopicData(topicDTO);
+        validateTitleDoesNotExist(topicDTO.title());
 
-        Topic newTopic = new Topic(data);
-        this.saveTopic(newTopic);
-        return newTopic;
+        Topic newTopic = new Topic(topicDTO);
+        return topicRepository.save(newTopic);
     }
 
-    private void validateTopicData(TopicDTO data) {
-        if (isNullOrEmpty(data.title())) {
+    private void validateTopicData(TopicDTO topicDTO) {
+        if (isNullOrEmpty(topicDTO.title())) {
             throw new IllegalArgumentException("Title is required!");
         }
-        if (isNullOrEmpty(data.description())) {
+        if (isNullOrEmpty(topicDTO.description())) {
             throw new IllegalArgumentException("Description is required!");
         }
     }
@@ -44,9 +43,6 @@ public class TopicService {
         return value == null || value.trim().isEmpty();
     }
 
-    public void saveTopic(Topic topic) {
-        this.topicRepository.save(topic);
-    }
 
     public List<Topic> listTopics() {
         return this.topicRepository.findAll();

@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +16,7 @@ import com.sarapio.votacao_api.dtos.SessionDTO;
 import com.sarapio.votacao_api.service.SessionService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,46 +40,49 @@ public class SessionControllerTest {
     @MockBean
     private SessionService sessionService;
 
-    private static final Long VALID_TOPIC_ID = 6L;
-    private static final Long INVALID_TOPIC_ID = 123L;
-
     @Test
     @DisplayName("Should return 400 BAD REQUEST when information is invalid")
     void shouldReturnBadRequestWhenInformationIsInvalid() throws Exception {
+        Long invalidTopicId = 999L; 
 
-        SessionDTO invalidSessionDTO = new SessionDTO(1L, 1L, 1L);
+        SessionDTO invalidSessionDTO = new SessionDTO(invalidTopicId); 
         String jsonContent = objectMapper.writeValueAsString(invalidSessionDTO);
 
-        var response = mvc.perform(post("/sessions/{topicId}", INVALID_TOPIC_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent))
-                .andReturn().getResponse();
+        when(sessionService.createSession(any(SessionDTO.class)))
+            .thenThrow(new IllegalArgumentException("Invalid topic"));
+
+        var response = mvc.perform(post("/sessions/create") 
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(jsonContent))
+                    .andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
 
     @Test
     @DisplayName("Should return 201 CREATED when information is valid")
     void shouldReturnCreatedWhenInformationIsValid() throws Exception {
 
-        SessionDTO validSessionDTO = new SessionDTO(VALID_TOPIC_ID, 1L, 1L);
-        Session mockSession = createMockSession(VALID_TOPIC_ID);
+        SessionDTO validSessionDTO = new SessionDTO(1L); 
 
-        when(sessionService.createSession(VALID_TOPIC_ID)).thenReturn(mockSession);
+        Session mockSession = createMockSession(1L);
 
-        mvc.perform(post("/sessions/{topicId}", VALID_TOPIC_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validSessionDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(6))
-                .andExpect(jsonPath("$.dateStart").value(1734561793573L))
-                .andExpect(jsonPath("$.dateEnd").value(1734577200000L))
-                .andExpect(jsonPath("$.countVoto").value(0))
-                .andExpect(jsonPath("$.topic.id").value(6))
-                .andExpect(jsonPath("$.topic.title").value("Topic Title"))
-                .andExpect(jsonPath("$.topic.description").value("Topic Description"));
+        when(sessionService.createSession(any(SessionDTO.class))).thenReturn(mockSession);
 
-        verify(sessionService, times(1)).createSession(VALID_TOPIC_ID);
+        mvc.perform(post("/sessions/create") 
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(validSessionDTO)))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.id").value(6))
+                    .andExpect(jsonPath("$.dateStart").value(1734561793573L))
+                    .andExpect(jsonPath("$.dateEnd").value(1734577200000L))
+                    .andExpect(jsonPath("$.countVoto").value(0))
+                    .andExpect(jsonPath("$.topic.id").value(1)) 
+                    .andExpect(jsonPath("$.topic.title").value("Topic Title"))
+                    .andExpect(jsonPath("$.topic.description").value("Topic Description"));
+
+        verify(sessionService, times(1)).createSession(any(SessionDTO.class));
     }
 
     private Session createMockSession(Long topicId) {
