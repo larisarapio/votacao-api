@@ -1,9 +1,13 @@
-package com.sarapio.votacao_api.domain.associate;
+package com.sarapio.votacao_api.domain;
 
 import com.sarapio.votacao_api.domain.vote.Vote;
+import com.sarapio.votacao_api.dtos.AssociateDTO;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +16,8 @@ import java.util.UUID;
 @Table(name = "associate")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Associate {
 
     @Id
@@ -27,35 +33,9 @@ public class Associate {
     @OneToMany(mappedBy = "associate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes;
 
-    public UUID getId() {
-        return id;
+    public Associate(AssociateDTO data) {
+        this.cpf = data.cpf();
+        this.name = data.name();
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Vote> getVotes() {
-        return votes;
-    }
-
-    public void setVotes(List<Vote> votes) {
-        this.votes = votes;
-    }
 }

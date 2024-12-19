@@ -1,7 +1,7 @@
 package com.sarapio.votacao_api.service;
 
-import com.sarapio.votacao_api.domain.associate.Associate;
-import com.sarapio.votacao_api.domain.associate.AssociateRequestDTO;
+import com.sarapio.votacao_api.domain.Associate;
+import com.sarapio.votacao_api.dtos.AssociateDTO;
 import com.sarapio.votacao_api.repositories.AssociateRepository;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -15,26 +15,37 @@ public class AssociateService {
         this.associateRepository = associateRepository;
     }
 
-    public Associate createAssociate(AssociateRequestDTO data) {
-        String cpf = data.cpf();
+    public Associate createAssociate(AssociateDTO associateData) {
+        validateAssociateData(associateData);
+        
+        String cpf = associateData.cpf();
+        checkIfAssociateExists(cpf);
 
-        String name = data.name();
+        return saveNewAssociate(cpf, associateData.name());
+    }
 
-        if (cpf == null || cpf.isEmpty() || name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("CPF e Nome são obrigatórios!");
+    private void validateAssociateData(AssociateDTO associateData) {
+        if (associateData.cpf() == null || associateData.cpf().isEmpty()) {
+            throw new IllegalArgumentException("CPF is required!");
         }
 
-        Optional<Associate> existente = associateRepository.findByCpf(cpf);
-        if (existente.isPresent()) {
-            throw new IllegalStateException("Associado com este CPF já está cadastrado!");
+        if (associateData.name() == null || associateData.name().isEmpty()) {
+            throw new IllegalArgumentException("Name is required!");
         }
+    }
 
+    private void checkIfAssociateExists(String cpf) {
+        Optional<Associate> existingAssociate = associateRepository.findByCpf(cpf);
+        if (existingAssociate.isPresent()) {
+            throw new IllegalStateException("Associate with this CPF is already registered!");
+        }
+    }
+
+    private Associate saveNewAssociate(String cpf, String name) {
         Associate associate = new Associate();
         associate.setCpf(cpf);
         associate.setName(name);
 
         return associateRepository.save(associate);
     }
-
-
 }

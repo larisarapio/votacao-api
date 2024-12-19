@@ -1,7 +1,7 @@
 package com.sarapio.votacao_api.service;
 
 import com.github.javafaker.Faker;
-import com.sarapio.votacao_api.domain.associate.Associate;
+import com.sarapio.votacao_api.domain.Associate;
 import com.sarapio.votacao_api.domain.Session;
 import com.sarapio.votacao_api.domain.vote.Vote;
 import com.sarapio.votacao_api.domain.vote.VoteRequestDTO;

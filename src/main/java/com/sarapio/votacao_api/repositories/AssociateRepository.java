@@ -1,7 +1,8 @@
 package com.sarapio.votacao_api.repositories;
 
-import com.sarapio.votacao_api.domain.associate.Associate;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.sarapio.votacao_api.domain.Associate;
 
 import java.util.Optional;
 import java.util.UUID;
