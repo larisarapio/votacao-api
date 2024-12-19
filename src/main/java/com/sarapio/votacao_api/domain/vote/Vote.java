@@ -20,6 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Vote {
+    
     @Id
     @GeneratedValue
     private UUID id;
