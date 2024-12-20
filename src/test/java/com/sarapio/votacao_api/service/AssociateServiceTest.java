@@ -47,6 +47,7 @@ public class AssociateServiceTest {
     }
 
     @Test
+    @DisplayName("Validate cpf null")
     void shouldThrowExceptionWhenCpfIsNull() {
         AssociateDTO associateDTO = new AssociateDTO(null, "Name");
         
@@ -54,6 +55,7 @@ public class AssociateServiceTest {
     }
 
     @Test
+    @DisplayName("Validate name null")
     void shouldThrowExceptionWhenCpfAlreadyExists() {
         String cpf = "12345678901";
         AssociateDTO associateDTO = new AssociateDTO(cpf, "Name");
@@ -61,6 +63,5 @@ public class AssociateServiceTest {
 
         assertThrows(IllegalStateException.class, () -> associateService.createAssociate(associateDTO));
     }
-
 
 }
