@@ -41,7 +41,7 @@ public class SessionServiceTest {
         Long topicId = 1L;
         SessionDTO sessionDTO = new SessionDTO(topicId); 
 
-        Topic topic = new Topic(topicId, "Sample Topic", "Description of the topic");
+        Topic topic = new Topic(topicId, "New Topic", "Description of the topic");
         when(topicRepository.findById(topicId)).thenReturn(Optional.of(topic));
 
         Date dateEnd = new Date(System.currentTimeMillis() + 10000); 

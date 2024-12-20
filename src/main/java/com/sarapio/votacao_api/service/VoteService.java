@@ -83,7 +83,7 @@ public class VoteService {
     }
 
     private static class VoteMessages {
-        public static final String ALREADY_VOTED = "Você já votou nesta sessão!";
+        public static final String ALREADY_VOTED = "Associado já votou!";
         public static final String VOTE_SUCCESS = "Voto registrado com sucesso!";
     }
 }
