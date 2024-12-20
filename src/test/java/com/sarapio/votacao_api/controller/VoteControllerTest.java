@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,8 +21,8 @@ import com.sarapio.votacao_api.domain.vote.VoteEnum;
 import com.sarapio.votacao_api.dtos.VoteDTO;
 import com.sarapio.votacao_api.service.VoteService;
 
+@WebMvcTest(VoteController.class)
 @AutoConfigureMockMvc
-@SpringBootTest
 @AutoConfigureJsonTesters
 public class VoteControllerTest {
 
@@ -31,7 +31,6 @@ public class VoteControllerTest {
 
     @MockBean
     private VoteService voteService;
-
 
     @Test
     @DisplayName("Should register vote successfully")
