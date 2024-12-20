@@ -1,8 +1,12 @@
 package com.sarapio.votacao_api.controller;
 
 import com.sarapio.votacao_api.domain.Associate;
+import com.sarapio.votacao_api.domain.Topic;
 import com.sarapio.votacao_api.dtos.AssociateDTO;
+import com.sarapio.votacao_api.dtos.TopicDTO;
 import com.sarapio.votacao_api.service.AssociateService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,23 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/associate")
 public class AssociateController {
 
-    private static final String APPLICATION_JSON = MediaType.APPLICATION_JSON_VALUE;
-
     private final AssociateService associateService;
 
     public AssociateController(AssociateService associateService) {
         this.associateService = associateService;
     }
 
-    @PostMapping(produces = APPLICATION_JSON, consumes = APPLICATION_JSON)
+    @PostMapping()
     public ResponseEntity<Associate> createAssociate(@RequestBody AssociateDTO data) {
-        try {
-            Associate associate = associateService.createAssociate(data);
-            return ResponseEntity.ok(associate);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);  
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); 
-        }
+        Associate associate = associateService.createAssociate(data);
+        return new ResponseEntity<>(associate, HttpStatus.CREATED);
+
     }
+
 }

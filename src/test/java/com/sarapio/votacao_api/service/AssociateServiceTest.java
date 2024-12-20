@@ -1,16 +1,19 @@
 package com.sarapio.votacao_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.sarapio.votacao_api.domain.Associate;
@@ -41,6 +44,22 @@ public class AssociateServiceTest {
         assertEquals("Larissa", result.getName());        
         verify(associateRepository).save(any(Associate.class));
 
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCpfIsNull() {
+        AssociateDTO associateDTO = new AssociateDTO(null, "Name");
+        
+        assertThrows(IllegalArgumentException.class, () -> associateService.createAssociate(associateDTO));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCpfAlreadyExists() {
+        String cpf = "12345678901";
+        AssociateDTO associateDTO = new AssociateDTO(cpf, "Name");
+        Mockito.when(associateRepository.findByCpf(cpf)).thenReturn(Optional.of(new Associate()));
+
+        assertThrows(IllegalStateException.class, () -> associateService.createAssociate(associateDTO));
     }
 
 
