@@ -1,7 +1,19 @@
-FROM eclipse-temurin:17.0.8.1_1-jdk-jammy
 
-COPY . .
+FROM maven:3.9.7-eclipse-temurin-21 AS build
 
-RUN ./mvnw clean install -DskipTests
+COPY src /app/src
+COPY pom.xml /app
 
-ENTRYPOINT [ "java", "-jar", "target/votacao-api-0.0.1-SNAPSHOT.jar" ]
+WORKDIR /app
+
+RUN mvn clean install -DskipTests
+
+FROM eclipse-temurin:21-jdk-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]
